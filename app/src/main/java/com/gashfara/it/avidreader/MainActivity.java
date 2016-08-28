@@ -16,4 +16,9 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
     }
+
+//    @Override
+//    public void onTabChanged(String tabId) {
+//        Log.d("onTabChanged", "tabId: " + tabId);
+//    }
 }

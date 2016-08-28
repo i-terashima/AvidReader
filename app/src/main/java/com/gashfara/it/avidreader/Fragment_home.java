@@ -20,18 +20,20 @@ public class Fragment_home extends Fragment {
 
         TabHost.TabSpec tabSpec1, tabSpec2;
 
-        // TabSpec �𐶐�����
-        tabSpec1 = tabHost.newTabSpec("tab1");
-        tabSpec1.setIndicator("tab1");
-        // TabHost �ɒǉ�
-        tabHost.addTab(tabSpec1, SampleFragment.class, null);
+        // TabSpec を生成する
+        tabSpec1 = tabHost.newTabSpec("書庫");
+        tabSpec1.setIndicator("書庫");
+        // TabHost に追加
+        tabHost.addTab(tabSpec1, Fragment_library.class, null);
 
-        // TabSpec �𐶐�����
-        tabSpec2 = tabHost.newTabSpec("tab2");
-        tabSpec2.setIndicator("tab2");
-        // TabHost �ɒǉ�
-        tabHost.addTab(tabSpec2, SampleFragment.class, null);
+        // TabSpec を生成する
+        tabSpec2 = tabHost.newTabSpec("ストック");
+        tabSpec2.setIndicator("ストック");
+        // TabHost に追加
+        tabHost.addTab(tabSpec2, Fragment_stock.class, null);
 
-        return view;
+//        tabHost.setOnTabChangedListener(tabHost);
+
+         return view;
     }
 }

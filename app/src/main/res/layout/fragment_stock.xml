@@ -4,9 +4,11 @@
     android:layout_height="match_parent"
     tools:context="com.rakuishi.fragment.fragment.SampleFragment">
 
-    <TextView
+    <fragment
+        android:name="com.gashfara.it.avidreader.Fragment_stock"
+        android:id="@+id/fragment_stock"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello World!" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
 </FrameLayout>
