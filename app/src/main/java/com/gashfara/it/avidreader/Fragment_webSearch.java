@@ -12,7 +12,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Fragment_library extends ListFragment {
+
+public class Fragment_webSearch extends ListFragment {
 
     private List<Item_library> list;
     private ArrayAdapter<Item_library> adapter;
@@ -21,6 +22,8 @@ public class Fragment_library extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+
 
         list = new ArrayList();
         for (int i = 0; i < 30; i++) {
