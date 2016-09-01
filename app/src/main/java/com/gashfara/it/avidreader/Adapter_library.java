@@ -42,7 +42,8 @@ public class Adapter_library extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-                                        Fragment fragment = new Fragment_webSearch();
+//                                        Fragment fragment = new Fragment_webSearch();
+                                        Fragment fragment = Adapter_webSearch.newInstance();
                                         getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
                                         break;
                                     case 1:

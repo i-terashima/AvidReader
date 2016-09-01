@@ -47,10 +47,5 @@
             android:textSize="16dp"
             android:gravity="center|left" />
     </LinearLayout>
-    <View
-        android:layout_gravity="center"
-        android:layout_width="320dp"
-        android:layout_height= "2dp"
-        android:background="#808080" />
 
 </LinearLayout>

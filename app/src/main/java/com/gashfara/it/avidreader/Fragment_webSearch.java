@@ -27,27 +27,38 @@ import java.util.List;
 
 public class Fragment_webSearch extends ListFragment {
 
-    private List<MessageRecord> messageRecords;
-    private ArrayAdapter<MessageRecord> adapter;
+    private List<Item_library> messageRecords;
+    private ArrayAdapter<Item_library> adapter;
+    private String searchText;
+
+    public static Fragment_webSearch newInstance(String searchText) {
+        Bundle args = new Bundle();
+        args.putString("searchText", searchText);
+        Fragment_webSearch fragment = new Fragment_webSearch();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         messageRecords = new ArrayList();
-
+        String mSearchText = getArguments().getString("searchText", searchText);
         fetch();
     }
 
     private class ViewHolder {
         NetworkImageView imageListUrl;
-        TextView commentListText;
+        TextView titleListText;
+        TextView publisherListText;
+        TextView authorListText;
     }
 
     private void fetch() {
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
-                "http://gashfara.com/test/json.txt",
+                "https://www.googleapis.com/books/v1/volumes?q=" + getArguments().getString("searchText", searchText) + "&maxResults=40",
                 null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -73,29 +84,36 @@ public class Fragment_webSearch extends ListFragment {
                     }
                 });
         VolleyApplication.getInstance().getRequestQueue().add(request);
-
     }
 
+    private List<Item_library> parse(JSONObject json) throws JSONException {
+        ArrayList<Item_library> records = new ArrayList<Item_library>();
+        JSONArray jsonMessages = json.getJSONArray("items");
+        int length = json.getInt("totalItems");
 
-    private List<MessageRecord> parse(JSONObject json) throws JSONException {
-        ArrayList<MessageRecord> records = new ArrayList<MessageRecord>();
-        JSONArray jsonMessages = json.getJSONArray("messages");
-        for (int i = 0; i < jsonMessages.length(); i++) {
-            JSONObject jsonMessage = jsonMessages.getJSONObject(i);
-            String title = jsonMessage.getString("comment");
-            String url = jsonMessage.getString("imageUrl");
-            MessageRecord record = new MessageRecord(url, title);
+        for (int i = 0; i < 10; i++) {
+            JSONObject jsonMessage = jsonMessages.getJSONObject(i).getJSONObject("volumeInfo");
+
+            String url = jsonMessage.getJSONObject("imageLinks").getString("smallThumbnail");
+            String title = jsonMessage.getString("title");
+
+            String author = jsonMessage.getJSONArray("authors").toString()
+                    .replace("[", "").replace("]", "").replace("\"","");
+
+
+            String publisher = jsonMessage.getString("publisher");
+
+            Item_library record = new Item_library(url, title, author, publisher);
             records.add(record);
         }
-
         return records;
     }
 
-    private class ListAdapter extends ArrayAdapter<MessageRecord> {
+    private class ListAdapter extends ArrayAdapter<Item_library> {
         private LayoutInflater mInflater;
         private ImageLoader mImageLoader;
 
-        public ListAdapter(Context context, List<MessageRecord> objects) {
+        public ListAdapter(Context context, List<Item_library> objects) {
             super(context, 0, objects);
             mInflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -105,30 +123,23 @@ public class Fragment_webSearch extends ListFragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             final ViewHolder holder;
             if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.message_item, parent, false);
+                convertView = mInflater.inflate(R.layout.card_websearch, parent, false);
                 holder = new ViewHolder();
-                holder.imageListUrl = (NetworkImageView) convertView.findViewById(R.id.image1);
-                holder.commentListText = (TextView) convertView.findViewById(R.id.text1);
+                holder.imageListUrl = (NetworkImageView) convertView.findViewById(R.id.image_websearch);
+                holder.titleListText = (TextView) convertView.findViewById(R.id.title_websearch);
+                holder.publisherListText = (TextView) convertView.findViewById(R.id.publisher_websearch);
+                holder.authorListText = (TextView) convertView.findViewById(R.id.author_websearch);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            final MessageRecord imageRecord = getItem(position);
+            final Item_library imageRecord = getItem(position);
             holder.imageListUrl.setImageUrl(imageRecord.getImageUrl(), mImageLoader);
-            holder.commentListText.setText(imageRecord.getComment());
+            holder.titleListText.setText(imageRecord.getTitle());
+            holder.publisherListText.setText(imageRecord.getPublisher());
+            holder.authorListText.setText(imageRecord.getAuthor());
 
             return convertView;
-        }
-
-        public void setMessageRecords(List<MessageRecord> objects) {
-            //ArrayAdapterを空にする。
-            clear();
-            //テータの数だけMessageRecordを追加します。
-            for (MessageRecord object : objects) {
-                add(object);
-            }
-            //データの変更を通知します。
-            notifyDataSetChanged();
         }
     }
 }

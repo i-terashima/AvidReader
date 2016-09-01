@@ -1,11 +1,9 @@
 package com.gashfara.it.avidreader;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,34 +24,28 @@ public class Adapter_webSearch extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Fragment fragment = new Fragment_webSearch();
-        View view = inflater.inflate(R.layout.adapter_library, container, false);
-        getChildFragmentManager().beginTransaction().add(R.id.fragment_library, fragment).commit();
-        FloatingActionButton fab_search = (FloatingActionButton) view.findViewById(R.id.fab_search);
+        View view = inflater.inflate(R.layout.adapter_websearch, container, false);
 
-        fab_search.setOnClickListener(new View.OnClickListener() {
+        // searchView
+        final android.support.v7.widget.SearchView searchText = (android.support.v7.widget.SearchView) view
+                .findViewById(R.id.search_text);
+
+        // Expand the SearchView with
+        searchText.setIconified(false);
+
+        searchText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onClick(View v) {
-                final String[] items = {"Web検索", "バーコード", "ISBN"};
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("書籍の登録を選択してください")
-                        .setItems(items, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case 0:
-                                        Fragment fragment = new Fragment_stock();
-                                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-                                        break;
-                                    case 1:
-                                        break;
-                                    case 2:
-                                        break;
-                                }
-                                dialog.dismiss();           // item_which pressed
-                            }
-                        })
-                        .show();
+            public boolean onQueryTextChange(String arg0) {
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String arg0) {
+                // TODO Auto-generated method stub
+                Fragment fragment = Fragment_webSearch.newInstance(arg0);
+                getChildFragmentManager().beginTransaction().add(R.id.fragment_websearch, fragment).commit();
+                return false;
             }
         });
         return view;

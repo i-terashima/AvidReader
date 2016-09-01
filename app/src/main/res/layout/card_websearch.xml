@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/websearch_card"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/image_websearch"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:id="@+id/title_websearch"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:gravity="center|left"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/author_websearch"
+                android:layout_width="fill_parent"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center|left"
+                android:textSize="12dp" />
+
+            <TextView
+                android:id="@+id/publisher_websearch"
+                android:layout_width="fill_parent"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center|left"
+                android:textSize="12dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
