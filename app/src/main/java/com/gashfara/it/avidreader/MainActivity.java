@@ -21,6 +21,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         transaction.add(R.id.fragment_container, fragment, "home");
         transaction.commit();
 
+        Log.d("Hello", "test_activity_2");
     }
 
     @Override

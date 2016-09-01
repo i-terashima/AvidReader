@@ -36,13 +36,13 @@ public class Adapter_library extends Fragment {
             public void onClick(View v) {
                 final String[] items = {"Web検索", "バーコード", "ISBN"};
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("書籍の登録を選択してください")
+                        .setTitle("書籍の登録方法を選択してください")
                         .setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-                                        Fragment fragment = new Adapter_webSearch();
+                                        Fragment fragment = new Fragment_webSearch();
                                         getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
                                         break;
                                     case 1:
