@@ -12,6 +12,10 @@ import android.view.ViewGroup;
 
 
 public class Fragment_home extends Fragment implements ViewPager.OnPageChangeListener {
+
+    public Fragment_home() {
+    }
+    
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -26,7 +30,8 @@ public class Fragment_home extends Fragment implements ViewPager.OnPageChangeLis
 
                 switch (position) {
                     case 0:
-                        fragment = TestFragment.newInstance(position + 1);
+//                        fragment = Fragment_purchase.newInstance();
+                       fragment = TestFragment.newInstance(position + 1);
                         break;
                     case 1:
                         fragment = Adapter_library.newInstance();

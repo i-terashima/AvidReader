@@ -1,7 +1,10 @@
 package com.gashfara.it.avidreader;
 
+
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +27,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Fragment_webSearch extends ListFragment {
+
+    public Fragment_webSearch() {
+    }
+
+    public static Fragment_webSearch newInstance() {
+        Fragment_webSearch fragment = new Fragment_webSearch();
+        return fragment;
+    }
 
     private List<Item_library> messageRecords;
     private ArrayAdapter<Item_library> adapter;
@@ -46,6 +56,7 @@ public class Fragment_webSearch extends ListFragment {
         messageRecords = new ArrayList();
         String mSearchText = getArguments().getString("searchText", searchText);
         fetch();
+
     }
 
     private class ViewHolder {
@@ -98,12 +109,13 @@ public class Fragment_webSearch extends ListFragment {
             String title = jsonMessage.getString("title");
 
             String author = jsonMessage.getJSONArray("authors").toString()
-                    .replace("[", "").replace("]", "").replace("\"","");
-
+                    .replace("[", "").replace("]", "").replace("\"", "");
 
             String publisher = jsonMessage.getString("publisher");
 
-            Item_library record = new Item_library(url, title, author, publisher);
+            String purchaseUrl = "https://www.amazon.co.jp/gp/product/B01HHZDIWC/ref=s9_ri_gw_g74_i1_r?pf_rd_m=AN1VRQENFRJN5&pf_rd_s=&pf_rd_r=JRYVTTC357RTQCFPWX3N&pf_rd_t=36701&pf_rd_p=af1f6a92-57c5-4c51-adb8-be6c8e117649&pf_rd_i=desktop";
+
+            Item_library record = new Item_library(url, title, author, publisher, purchaseUrl);
             records.add(record);
         }
         return records;
@@ -138,6 +150,21 @@ public class Fragment_webSearch extends ListFragment {
             holder.titleListText.setText(imageRecord.getTitle());
             holder.publisherListText.setText(imageRecord.getPublisher());
             holder.authorListText.setText(imageRecord.getAuthor());
+            final String purchaseUrl = imageRecord.getPurchaseUrl();
+
+            FloatingActionButton fab_purchase = (FloatingActionButton) convertView.findViewById(R.id.fab_purchase);
+            fab_purchase.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle args = new Bundle();
+                    args.putString("purchaseUrl", purchaseUrl);
+                    Fragment fragment = Fragment_purchase.newInstance();
+
+                    fragment.setArguments(args);
+
+                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                }
+            });
 
             return convertView;
         }

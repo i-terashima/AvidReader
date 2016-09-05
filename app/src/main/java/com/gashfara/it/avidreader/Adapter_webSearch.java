@@ -44,7 +44,8 @@ public class Adapter_webSearch extends Fragment {
             public boolean onQueryTextSubmit(String arg0) {
                 // TODO Auto-generated method stub
                 Fragment fragment = Fragment_webSearch.newInstance(arg0);
-                getChildFragmentManager().beginTransaction().add(R.id.fragment_websearch, fragment).commit();
+                getFragmentManager().beginTransaction().replace(R.id.fragment_websearch, fragment).commit();
+
                 return false;
             }
         });

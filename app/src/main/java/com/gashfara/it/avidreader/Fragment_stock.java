@@ -17,6 +17,14 @@ public class Fragment_stock extends ListFragment {
     private List<Item_stock> list;
     private ArrayAdapter<Item_stock> adapter;
 
+    public Fragment_stock() {
+    }
+
+    public static Fragment_stock newInstance() {
+        Fragment_stock fragment = new Fragment_stock();
+        return fragment;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

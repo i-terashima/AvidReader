@@ -26,9 +26,10 @@ public class Adapter_library extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Fragment fragment = new Fragment_library();
+        Fragment fragment = Fragment_library.newInstance();
         View view = inflater.inflate(R.layout.adapter_library, container, false);
-        getChildFragmentManager().beginTransaction().add(R.id.fragment_library, fragment).commit();
+        getFragmentManager().beginTransaction().add(R.id.fragment_library, fragment).commit();
+
         FloatingActionButton fab_search = (FloatingActionButton) view.findViewById(R.id.fab_search);
 
         fab_search.setOnClickListener(new View.OnClickListener() {
@@ -42,9 +43,8 @@ public class Adapter_library extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-//                                        Fragment fragment = new Fragment_webSearch();
                                         Fragment fragment = Adapter_webSearch.newInstance();
-                                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+                                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
                                         break;
                                     case 1:
                                         break;

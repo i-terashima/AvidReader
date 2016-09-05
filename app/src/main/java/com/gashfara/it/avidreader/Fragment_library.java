@@ -17,6 +17,13 @@ public class Fragment_library extends ListFragment {
     private List<Item_library> list;
     private ArrayAdapter<Item_library> adapter;
 
+    public Fragment_library() {
+    }
+
+    public static Fragment_library newInstance() {
+        Fragment_library fragment = new Fragment_library();
+        return fragment;
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {

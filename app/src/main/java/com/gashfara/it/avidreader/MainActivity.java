@@ -40,4 +40,12 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
     }
 
+//    @Override
+//    public void onBackPressed() {
+//        int backStackCnt = getSupportFragmentManager().getBackStackEntryCount();
+//        if (backStackCnt != 0) {
+//            getSupportFragmentManager().popBackStack();
+//        }
+//    }
+
 }

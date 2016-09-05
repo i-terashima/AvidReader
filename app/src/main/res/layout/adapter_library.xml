@@ -19,5 +19,4 @@
         android:layout_gravity="bottom|end"
         android:src="@mipmap/ic_launcher" />
 
-
 </FrameLayout>

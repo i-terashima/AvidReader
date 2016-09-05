@@ -26,7 +26,7 @@ public class Adapter_stock extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Fragment fragment = new Fragment_stock();
+        Fragment fragment = Fragment_stock.newInstance();
         View view = inflater.inflate(R.layout.adapter_stock, container, false);
         getChildFragmentManager().beginTransaction().add(R.id.fragment_stock, fragment).commit();
         FloatingActionButton fab_search = (FloatingActionButton) view.findViewById(R.id.fab_add_stock);
@@ -42,7 +42,7 @@ public class Adapter_stock extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-                                        Fragment fragment = new Fragment_stock();
+                                        Fragment fragment = Fragment_stock.newInstance();
                                         getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
                                         break;
                                     case 1:

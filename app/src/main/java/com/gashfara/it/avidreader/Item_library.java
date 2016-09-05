@@ -5,6 +5,7 @@ public class Item_library {
     String title;
     String author;
     String publisher;
+    String purchaseUrl;
     String status;
 
     public Item_library() {
@@ -12,14 +13,16 @@ public class Item_library {
         this.title = "";
         this.author = "";
         this.publisher = "";
+        this.purchaseUrl ="";
         this.status = "";
     }
 
-    public Item_library(String imageUrl, String title, String author, String publisher) {
+    public Item_library(String imageUrl, String title, String author, String publisher, String purchaseUrl) {
         this.imageUrl = imageUrl;
         this.title = title;
         this.author = author;
         this.publisher = publisher;
+        this.purchaseUrl = purchaseUrl;
         this.status = "";
     }
 
@@ -49,6 +52,13 @@ public class Item_library {
     }
     public void setPublisher(String publisher) {
         this.publisher = publisher;
+    }
+
+    public String getPurchaseUrl() {
+        return purchaseUrl;
+    }
+    public void setPurchaseUrl(String purchaseUrl) {
+        this.purchaseUrl = purchaseUrl;
     }
 
     public String getStatus() {
