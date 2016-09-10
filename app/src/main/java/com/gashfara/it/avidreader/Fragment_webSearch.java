@@ -94,7 +94,7 @@ public class Fragment_webSearch extends ListFragment {
                         Toast.makeText(getActivity(), "Unable to fetch data: " + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-        VolleyApplication.getInstance().getRequestQueue().add(request);
+        MyApplication.getInstance().getRequestQueue().add(request);
     }
 
     private List<Item_library> parse(JSONObject json) throws JSONException {
@@ -129,7 +129,7 @@ public class Fragment_webSearch extends ListFragment {
             super(context, 0, objects);
             mInflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            mImageLoader = new ImageLoader(VolleyApplication.getInstance().getRequestQueue(), new BitmapLruCache());
+            mImageLoader = new ImageLoader(MyApplication.getInstance().getRequestQueue(), new BitmapLruCache());
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {

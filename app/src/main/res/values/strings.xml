@@ -4,4 +4,14 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="item_search_hint_area">検索</string>
+    <string name="facebook_app_id">1784222035188955</string>
+    <string name="enter_username">Enter username (3-64 length)</string>
+    <string name="enter_password">Enter password (4-50 length)</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="log_in">Log In</string>
+    <string name="operation_failed">Operation failed</string>
+    <string name="title_activity_user">UserActivity</string>
+    <string name="save_data_name">DataSave</string>
+    <string name="save_token">save_token</string>
+    <string name="title_activity_activity_login">Activity_login</string>
 </resources>

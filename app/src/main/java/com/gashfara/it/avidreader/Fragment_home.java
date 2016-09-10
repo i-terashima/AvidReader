@@ -30,7 +30,6 @@ public class Fragment_home extends Fragment implements ViewPager.OnPageChangeLis
 
                 switch (position) {
                     case 0:
-//                        fragment = Fragment_purchase.newInstance();
                        fragment = TestFragment.newInstance(position + 1);
                         break;
                     case 1:
