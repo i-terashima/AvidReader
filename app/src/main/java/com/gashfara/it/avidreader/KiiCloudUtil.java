@@ -8,7 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class KiiCloudUtil {
-    //KiiCloudのエラーメッセージを取り出すときに使います。
     public static String generateAlertMessage(CloudExecutionException ex) {
         StringBuffer sb = new StringBuffer();
         sb.append("KiiCloud returned error response.");
