@@ -75,6 +75,7 @@ public class Fragment_User extends Fragment {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.v("FB", "loginSuccess");
+                Toast.makeText(getActivity(), "Please wait a moment.", Toast.LENGTH_SHORT).show();
                 Bundle options = new Bundle();
                 String accessToken = loginResult.getAccessToken().getToken();
                 options.putString("accessToken", accessToken);
@@ -84,9 +85,9 @@ public class Fragment_User extends Fragment {
                     @Override
                     public void onLoginCompleted(KiiSocialConnect.SocialNetwork network, KiiUser user, Exception exception) {
                         if (exception != null) {
-
                             return;
                         }
+
                         SharedPreferences pref = getActivity().getSharedPreferences(getString(R.string.save_data_name), Context.MODE_PRIVATE);
                         pref.edit().putString(getString(R.string.save_token), user.getAccessToken()).apply();
 
