@@ -1,4 +1,3 @@
-<!-- ユーザー登録・ログインのレイアウトです。KiiCloudのチュートリアルから持ってきました。 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
@@ -6,8 +5,16 @@
     tools:context=".UserActivity"
     android:orientation="vertical" >
 
+    <TextView
+        android:text="Sign in/ Sign up to Kii with Facebook Account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoLink="web"
+        android:linksClickable="true"
+        android:id="@+id/textView"/>
+
     <com.facebook.login.widget.LoginButton
-        android:id="@+id/login_button"
+        android:id="@+id/facebookLoginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

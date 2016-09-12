@@ -3,7 +3,9 @@
     package="com.gashfara.it.avidreader" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+
 　
+    
     
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -25,6 +27,18 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.kii.cloud.storage.social.connector.KiiSocialNetworkConnectorLoginActivity"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".UserActivity"
+            android:label="@string/title_activity_user" >
         </activity>
     </application>
 
