@@ -17,4 +17,8 @@
 
     <string name="facebook_app_id">1784222035188955</string>
 
+    <string name="server_client_id">221983335399-leqjhotkcu45vh57ealk0vgghes85nsm.apps.googleusercontent.com</string>
+    <string name="server_client_secret">FtHEsGRleojLI0SwL1QgxsuI</string>
+    <string name="please_select_account">please_select_account</string>
+
 </resources>

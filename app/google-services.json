@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "221983335399",
+    "project_id": "avid-reader"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:221983335399:android:eed863a7829f687d",
+        "android_client_info": {
+          "package_name": "com.gashfara.it.avidreader"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "221983335399-s59slib59qjjv367ubi5l3st7r81aumn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gashfara.it.avidreader",
+            "certificate_hash": "248B194DA8AC53B53C9812808C6B4ECD4BE83564"
+          }
+        },
+        {
+          "client_id": "221983335399-leqjhotkcu45vh57ealk0vgghes85nsm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB01oGdfPihtur599MFQWBv7oLZIvgjNjE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
