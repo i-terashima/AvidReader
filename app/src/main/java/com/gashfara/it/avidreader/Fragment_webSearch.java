@@ -2,13 +2,15 @@ package com.gashfara.it.avidreader;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,11 +53,44 @@ public class Fragment_webSearch extends ListFragment {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        Log.d("test_log", "Fragment_webSearch");
         super.onActivityCreated(savedInstanceState);
 
         messageRecords = new ArrayList();
         String mSearchText = getArguments().getString("searchText", searchText);
-        fetch();
+
+        adapter = new ListAdapter(getActivity(), messageRecords);
+        setListAdapter(adapter);
+
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parentFragment, View arg1,
+                                    int position, long arg3) {
+                final String[] items = {"読了済", "読書中", "購入予定"};
+                int defaultItem = 0;
+                final List<Integer> checkedItems = new ArrayList<>();
+                checkedItems.add(defaultItem);
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("書庫に登録")
+                        .setSingleChoiceItems(items, defaultItem, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                checkedItems.clear();
+                                checkedItems.add(which);
+                            }
+                        })
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (!checkedItems.isEmpty()) {
+                                    Log.d("checkedItem:", "" + checkedItems.get(0));
+                                }
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            }
+        });
 
     }
 
@@ -80,6 +115,7 @@ public class Fragment_webSearch extends ListFragment {
 
                             adapter = new ListAdapter(getActivity(), messageRecords);
                             setListAdapter(adapter);
+
                             adapter.notifyDataSetChanged();
 
                         } catch (JSONException e) {
@@ -96,6 +132,8 @@ public class Fragment_webSearch extends ListFragment {
                 });
         MyApplication.getInstance().getRequestQueue().add(request);
     }
+
+    
 
     private List<Item_library> parse(JSONObject json) throws JSONException {
         ArrayList<Item_library> records = new ArrayList<Item_library>();
@@ -151,20 +189,6 @@ public class Fragment_webSearch extends ListFragment {
             holder.publisherListText.setText(imageRecord.getPublisher());
             holder.authorListText.setText(imageRecord.getAuthor());
             final String purchaseUrl = imageRecord.getPurchaseUrl();
-
-            FloatingActionButton fab_purchase = (FloatingActionButton) convertView.findViewById(R.id.fab_purchase);
-            fab_purchase.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Bundle args = new Bundle();
-                    args.putString("purchaseUrl", purchaseUrl);
-                    Fragment fragment = Fragment_purchase.newInstance();
-
-                    fragment.setArguments(args);
-
-                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
-                }
-            });
 
             return convertView;
         }

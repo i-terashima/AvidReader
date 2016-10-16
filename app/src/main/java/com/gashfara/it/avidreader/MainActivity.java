@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.facebook.login.LoginManager;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.kii.cloud.storage.KiiUser;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
@@ -21,6 +26,25 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED) {
+            String[] permissions = new String[] {
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
+            ActivityCompat.requestPermissions(this, permissions, 1);
+        } else {
+
+        }
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) !=
+                PackageManager.PERMISSION_GRANTED) {
+            String[] permissions = new String[] {
+                    android.Manifest.permission.CAMERA
+            };
+            ActivityCompat.requestPermissions(this, permissions, 1);
+        } else {
+
+        }
 
         KiiUser user = KiiUser.getCurrentUser();
 
@@ -33,9 +57,20 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             Fragment fragment = Fragment_User.newInstance();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
         } else {
-            Fragment fragment = new Fragment_home();
+            Fragment fragment = new Container_top();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //GrowthHackで追加ここから
+        //GAのスクリーン名はアクティビティーの名前を送信します。
+        Tracker t = ((MyApplication)getApplication()).getTracker(MyApplication.TrackerName.APP_TRACKER);
+        t.setScreenName(this.getClass().getSimpleName());
+        t.send(new HitBuilders.AppViewBuilder().build());
+        //GrowthHackで追加ここまで
     }
 
     @Override
@@ -86,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                                 case 0:
-                                    Fragment fragment = Adapter_webSearch.newInstance();
+                                    Fragment fragment = Container_webSearch.newInstance();
                                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
                                     break;
                                 case 1:
@@ -120,4 +155,6 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }

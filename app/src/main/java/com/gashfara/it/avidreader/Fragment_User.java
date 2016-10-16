@@ -144,7 +144,7 @@ public class Fragment_User extends Fragment implements GoogleApiClient.OnConnect
                         SharedPreferences pref = getActivity().getSharedPreferences(getString(R.string.save_data_name), Context.MODE_PRIVATE);
                         pref.edit().putString(getString(R.string.save_token), user.getAccessToken()).apply();
 
-                        Fragment fragment = new Fragment_home();
+                        Fragment fragment = new Container_top();
                         FragmentManager manager = getActivity().getSupportFragmentManager();
                         FragmentTransaction transaction = manager.beginTransaction();
                         transaction.replace(R.id.fragment_container, fragment, "home");
@@ -187,8 +187,6 @@ public class Fragment_User extends Fragment implements GoogleApiClient.OnConnect
                     .respondAuthOnActivityResult(resultCode, resultCode, data);
 
             String mEmail = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-//            String mType = data.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE);
-//            Account account = new Account(mEmail, mType);
             getGoogleToken(mEmail);
         }
         callbackManager.onActivityResult(requestCode, resultCode, data);
@@ -198,7 +196,6 @@ public class Fragment_User extends Fragment implements GoogleApiClient.OnConnect
         AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
             @Override
             protected String doInBackground(String... accounts) {
-//                String scopes = "oauth2:profile email";
                 String scopes = "oauth2:https://www.googleapis.com/auth/userinfo.profile";
                 String token = null;
                 try {
@@ -221,7 +218,6 @@ public class Fragment_User extends Fragment implements GoogleApiClient.OnConnect
                 options.putParcelable("provider", KiiSocialNetworkConnector.Provider.GOOGLEPLUS);
                 options.putString("accessToken", token);
                 KiiSocialConnect conn = Kii.socialConnect(KiiSocialConnect.SocialNetwork.SOCIALNETWORK_CONNECTOR);
-//                KiiSocialNetworkConnector conn = (KiiSocialNetworkConnector) Kii.socialConnect(KiiSocialConnect.SocialNetwork.SOCIALNETWORK_CONNECTOR);
 
                 conn.logIn(getActivity(), options, new KiiSocialCallBack() {
                     @Override
@@ -236,7 +232,7 @@ public class Fragment_User extends Fragment implements GoogleApiClient.OnConnect
                         SharedPreferences pref = getActivity().getSharedPreferences(getString(R.string.save_data_name), Context.MODE_PRIVATE);
                         pref.edit().putString(getString(R.string.save_token), user.getAccessToken()).apply();
 
-                        Fragment fragment = new Fragment_home();
+                        Fragment fragment = new Container_top();
                         FragmentManager manager = getActivity().getSupportFragmentManager();
                         FragmentTransaction transaction = manager.beginTransaction();
                         transaction.replace(R.id.fragment_container, fragment, "home");
@@ -262,7 +258,7 @@ public class Fragment_User extends Fragment implements GoogleApiClient.OnConnect
                 SharedPreferences pref = getActivity().getSharedPreferences(getString(R.string.save_data_name), Context.MODE_PRIVATE);
                 pref.edit().putString(getString(R.string.save_token), user.getAccessToken()).apply();
 
-                Fragment fragment = new Fragment_home();
+                Fragment fragment = new Container_top();
                 FragmentManager manager = getActivity().getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.fragment_container, fragment, "home");

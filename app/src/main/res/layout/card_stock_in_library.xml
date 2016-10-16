@@ -1,44 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/library_card"
+        android:id="@+id/stock_card"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/book_title"
+            android:id="@+id/stock_title"
             android:layout_width="fill_parent"
             android:layout_height="40dp"
             android:textSize="16dp"
             android:gravity="center|left" />
-        <LinearLayout
+        <TextView
+            android:id="@+id/stock_page"
+            android:layout_width="fill_parent"
+            android:layout_height="20dp"
+            android:textSize="12dp"
+            android:gravity="center|left" />
+        <TextView
+            android:id="@+id/stock_quote"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:paddingTop="5dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="10dp"
+            android:textSize="16dp"
+            android:gravity="center|left" />
         <TextView
-            android:id="@+id/book_author"
-            android:layout_width="fill_parent"
-            android:layout_height="20dp"
-            android:textSize="12dp"
-            android:gravity="center|left"
-            android:layout_weight="1"/>
-        <TextView
-            android:id="@+id/book_publisher"
-            android:layout_width="fill_parent"
-            android:layout_height="20dp"
-            android:textSize="12dp"
-            android:gravity="center|left"
-            android:layout_weight="1"/>
-        </LinearLayout>
-        <TextView
-            android:id="@+id/book_status"
+            android:id="@+id/stock_memo"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingTop="5dp"

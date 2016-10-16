@@ -10,10 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
-public class Fragment_home extends Fragment implements ViewPager.OnPageChangeListener {
 
-    public Fragment_home() {
+public class Container_top extends Fragment implements ViewPager.OnPageChangeListener {
+
+    public Container_top() {
     }
     
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -33,10 +36,10 @@ public class Fragment_home extends Fragment implements ViewPager.OnPageChangeLis
                        fragment = TestFragment.newInstance(position + 1);
                         break;
                     case 1:
-                        fragment = Adapter_library.newInstance();
+                        fragment = Container_library.newInstance();
                         break;
                     case 2:
-                        fragment = Adapter_stock.newInstance();
+                        fragment = Container_stock.newInstance();
                         break;
                     default:
                         break;
@@ -91,6 +94,17 @@ public class Fragment_home extends Fragment implements ViewPager.OnPageChangeLis
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        //GrowthHackで追加ここから
+        //GAのスクリーン名はアクティビティーの名前を送信します。
+        Tracker t = ((MyApplication)getActivity().getApplication()).getTracker(MyApplication.TrackerName.APP_TRACKER);
+        t.setScreenName(this.getClass().getSimpleName());
+        t.send(new HitBuilders.AppViewBuilder().build());
+        //GrowthHackで追加ここまで
     }
 
 }

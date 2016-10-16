@@ -10,14 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class Adapter_library extends Fragment {
+public class Container_library extends Fragment {
 
-    public Adapter_library() {
+    public Container_library() {
     }
 
-    public static Adapter_library newInstance() {
+    public static Container_library newInstance() {
         Bundle args = new Bundle();
-        Adapter_library fragment = new Adapter_library();
+        Container_library fragment = new Container_library();
         fragment.setArguments(args);
 
         return fragment;
@@ -27,7 +27,7 @@ public class Adapter_library extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Fragment fragment = Fragment_library.newInstance();
-        View view = inflater.inflate(R.layout.adapter_library, container, false);
+        View view = inflater.inflate(R.layout.container_library, container, false);
         getFragmentManager().beginTransaction().add(R.id.fragment_library, fragment).commit();
 
         FloatingActionButton fab_search = (FloatingActionButton) view.findViewById(R.id.fab_search);
@@ -43,7 +43,7 @@ public class Adapter_library extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-                                        Fragment fragment = Adapter_webSearch.newInstance();
+                                        Fragment fragment = Container_webSearch.newInstance();
                                         getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
                                         break;
                                     case 1:

@@ -10,14 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class Adapter_stock extends Fragment {
+public class Container_stock extends Fragment {
 
-    public Adapter_stock() {
+    public Container_stock() {
     }
 
-    public static Adapter_stock newInstance() {
+    public static Container_stock newInstance() {
         Bundle args = new Bundle();
-        Adapter_stock fragment = new Adapter_stock();
+        Container_stock fragment = new Container_stock();
         fragment.setArguments(args);
 
         return fragment;
@@ -27,7 +27,7 @@ public class Adapter_stock extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Fragment fragment = Fragment_stock.newInstance();
-        View view = inflater.inflate(R.layout.adapter_stock, container, false);
+        View view = inflater.inflate(R.layout.container_stock, container, false);
         getChildFragmentManager().beginTransaction().add(R.id.fragment_stock, fragment).commit();
         FloatingActionButton fab_search = (FloatingActionButton) view.findViewById(R.id.fab_add_stock);
 

@@ -1,20 +1,30 @@
 package com.gashfara.it.avidreader;
 
-public class Item_library {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Item_library implements Serializable {
     String imageUrl;
+    String isbn;
     String title;
     String author;
     String publisher;
     String purchaseUrl;
+    String page;
     String status;
+    List<Item_stockInLibrary> stocks;
 
     public Item_library() {
         this.imageUrl = "";
+        this.isbn = "";
         this.title = "";
         this.author = "";
         this.publisher = "";
-        this.purchaseUrl ="";
+        this.purchaseUrl = "";
+        this.page = "";
         this.status = "";
+        this.stocks = new ArrayList<Item_stockInLibrary>();
     }
 
     public Item_library(String imageUrl, String title, String author, String publisher, String purchaseUrl) {
@@ -26,45 +36,41 @@ public class Item_library {
         this.status = "";
     }
 
+    public Item_library(String title, String author, String publisher, String status) {
+        this.title = title;
+        this.author = author;
+        this.publisher = publisher;
+        this.status = status;
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
     public String getTitle() {
         return title;
     }
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getAuthor() {
         return author;
     }
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
     public String getPublisher() {
         return publisher;
     }
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
-    }
-
     public String getPurchaseUrl() {
         return purchaseUrl;
     }
-    public void setPurchaseUrl(String purchaseUrl) {
-        this.purchaseUrl = purchaseUrl;
-    }
-
     public String getStatus() {
         return status;
     }
+    public List<Item_stockInLibrary> getStocks() {
+        return stocks;
+    }
+
+    public void setStocks(List<Item_stockInLibrary> stocks) {
+        this.stocks = stocks;
+    }
+
     public void setStatus(String status) {
         this.status = status;
     }
+
 }

@@ -1,6 +1,8 @@
 package com.gashfara.it.avidreader;
 
-public class Item_stock {
+import java.io.Serializable;
+
+public class Item_stock implements Serializable {
     String title;
     String page;
     String quote;

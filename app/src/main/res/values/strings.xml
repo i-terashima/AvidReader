@@ -13,6 +13,12 @@
     <string name="save_data_name">DataSave</string>
     <string name="save_token">save_token</string>
 
+
+    <string name="attach_button">ImageAttach</string>
+    <string name="attach_camera_button">CameraAttach</string>
+    <string name="post_button">Post</string>
+    <string name="no_data_message">No Data</string>
+
     <string name="operation_failed">Operation failed</string>
 
     <string name="facebook_app_id">1784222035188955</string>

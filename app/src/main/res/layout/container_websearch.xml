@@ -15,12 +15,13 @@
             android:layout_height="wrap_content"
             android:icon="@mipmap/ic_launcher"
             app:queryHint="@string/item_search_hint_area"
-            app:showAsAction="always" />
+            app:showAsAction="always"/>
 
-        <FrameLayout
-            android:id="@+id/fragment_websearch"
+        <ListView
+            android:id="@+id/search_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_below="@id/search_text"/>
 
     </LinearLayout>
 
