@@ -1,6 +1,9 @@
 package com.gashfara.it.avidreader;
 
 import android.app.Application;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -10,11 +13,20 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.kii.cloud.storage.Kii;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 
 public class MyApplication extends Application {
     private static MyApplication sInstance;
     private RequestQueue mRequestQueue;
+    String datapath;
 
     //GrowthHackで追加ここから
     //トラッキングIDを設定
@@ -51,27 +63,20 @@ public class MyApplication extends Application {
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
-//        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-//                getApplicationContext(),
-//                "ap-northeast-1:b331f4b6-7041-423e-8cf6-5a4174ce49ed", // Identity Pool ID
-//                Regions.AP_NORTHEAST_1 // Region
-//        );
-//        CognitoSyncManager syncClient = new CognitoSyncManager(
-//                getApplicationContext(),
-//                Regions.AP_NORTHEAST_1, // Region
-//                credentialsProvider);
-//
-//        AmazonS3 s3 = new AmazonS3Client(credentialsProvider);
-
-//    // Create a record in a dataset and synchronize with the server
-//        Dataset dataset = syncClient.openOrCreateDataset("myDataset");
-//        dataset.put("myKey", "myValue");
-//        dataset.synchronize(new DefaultSyncCallback() {
-//            @Override
-//            public void onSuccess(Dataset dataset, List newRecords) {
-//                //Your handler code here
-//            }
-//        });
+        datapath = Environment.getExternalStorageDirectory() + "/Tess-two/";
+        File dir = new File(datapath + "/tessdata/");
+        File file_jpn = new File(datapath + "/tessdata/" + "jpn.traineddata");
+        File file_eng = new File(datapath + "/tessdata/" + "eng.traineddata");
+        if (!file_jpn.exists()) {
+            Log.d("test_log", "download jpn.traineddata");
+            dir.mkdirs();
+            new HttpGetTask_jpn().execute();
+        }
+        if (!file_eng.exists()) {
+            Log.d("test_log", "download eng.traineddata");
+            dir.mkdirs();
+            new HttpGetTask_eng().execute();
+        }
     }
 
     public synchronized static MyApplication getInstance() {
@@ -81,6 +86,122 @@ public class MyApplication extends Application {
     //通信クラスを返す関数
     public RequestQueue getRequestQueue() {
         return mRequestQueue;
+    }
+
+    public final class HttpGetTask_jpn extends AsyncTask<URL, Void, Boolean> {
+        public HttpGetTask_jpn() {
+        }
+        @Override
+        protected Boolean doInBackground(URL[] urls) {
+            HttpURLConnection con = null;
+            try {
+                // アクセス先URL
+                final URL url = new URL("https://github.com/tesseract-ocr/tessdata/raw/master/jpn.traineddata");
+
+                // 出力ファイルフルパス
+                final String filePath = datapath + "/tessdata/" + "jpn.traineddata";
+
+                // ローカル処理
+                // コネクション取得
+                con = (HttpURLConnection) url.openConnection();
+                con.connect();
+
+                // HTTPレスポンスコード
+                final int status = con.getResponseCode();
+                if (status == HttpURLConnection.HTTP_OK) {
+                    // 通信に成功した
+                    // ファイルのダウンロード処理を実行
+                    // 読み込み用ストリーム
+                    final InputStream input = con.getInputStream();
+                    final DataInputStream dataInput = new DataInputStream(input);
+                    // 書き込み用ストリーム
+                    final FileOutputStream fileOutput = new FileOutputStream(filePath);
+                    final DataOutputStream dataOut = new DataOutputStream(fileOutput);
+                    // 読み込みデータ単位
+                    final byte[] buffer = new byte[4096];
+                    // 読み込んだデータを一時的に格納しておく変数
+                    int readByte = 0;
+
+                    // ファイルを読み込む
+                    while ((readByte = dataInput.read(buffer)) != -1) {
+                        dataOut.write(buffer, 0, readByte);
+                    }
+                    // 各ストリームを閉じる
+                    dataInput.close();
+                    fileOutput.close();
+                    dataInput.close();
+                    input.close();
+                    // 処理成功
+                    return true;
+                }
+
+            } catch (IOException e1) {
+                Log.d("test_log", "e1.printStackTrace();");
+            } finally {
+                if (con != null) {
+                    // コネクションを切断
+                    con.disconnect();
+                }
+            }
+            return false;
+        }
+    }
+    public final class HttpGetTask_eng extends AsyncTask<URL, Void, Boolean> {
+        public HttpGetTask_eng() {
+        }
+        @Override
+        protected Boolean doInBackground(URL[] urls) {
+            HttpURLConnection con = null;
+            try {
+                // アクセス先URL
+                final URL url = new URL("https://github.com/tesseract-ocr/tessdata/raw/master/eng.traineddata");
+                // 出力ファイルフルパス
+                final String filePath = datapath + "/tessdata/" + "eng.traineddata";
+
+                // ローカル処理
+                // コネクション取得
+                con = (HttpURLConnection) url.openConnection();
+                con.connect();
+
+                // HTTPレスポンスコード
+                final int status = con.getResponseCode();
+                if (status == HttpURLConnection.HTTP_OK) {
+                    // 通信に成功した
+                    // ファイルのダウンロード処理を実行
+                    // 読み込み用ストリーム
+                    final InputStream input = con.getInputStream();
+                    final DataInputStream dataInput = new DataInputStream(input);
+                    // 書き込み用ストリーム
+                    final FileOutputStream fileOutput = new FileOutputStream(filePath);
+                    final DataOutputStream dataOut = new DataOutputStream(fileOutput);
+                    // 読み込みデータ単位
+                    final byte[] buffer = new byte[4096];
+                    // 読み込んだデータを一時的に格納しておく変数
+                    int readByte = 0;
+
+                    // ファイルを読み込む
+                    while((readByte = dataInput.read(buffer)) != -1) {
+                        dataOut.write(buffer, 0, readByte);
+                    }
+                    // 各ストリームを閉じる
+                    dataInput.close();
+                    fileOutput.close();
+                    dataInput.close();
+                    input.close();
+                    // 処理成功
+                    return true;
+                }
+
+            } catch (IOException e1) {
+                Log.d("test_log", "e1.printStackTrace();");
+            } finally {
+                if (con != null) {
+                    // コネクションを切断
+                    con.disconnect();
+                }
+            }
+            return false;
+        }
     }
 
 }

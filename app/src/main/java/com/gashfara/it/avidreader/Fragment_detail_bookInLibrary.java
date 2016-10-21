@@ -39,7 +39,6 @@ public class Fragment_detail_bookInLibrary extends Fragment {
         View view = inflater.inflate(R.layout.fragment_detail_bookinlibrary, container, false);
 
         book = (Item_library) getArguments().getSerializable("book");
-        Log.d("test_log", "1");
 
         ((TextView) view.findViewById(R.id.book_title)).setText(book.getTitle());
         ((TextView) view.findViewById(R.id.book_author)).setText(book.getAuthor());
@@ -47,23 +46,14 @@ public class Fragment_detail_bookInLibrary extends Fragment {
         ((TextView) view.findViewById(R.id.book_status)).setText(book.getStatus());
 
         ListView listView = (ListView) view.findViewById(R.id.stock_list);
-        Log.d("test_log", "2");
         stocks = book.getStocks();
 
-
-
-
-        Log.d("test_log", "3");
-//        adapter = new ListAdapter(getActivity(), stocks);
-//        adapter = new ListAdapter(getActivity(), listdata);
-        Log.d("test_log", "4");
         listView.setAdapter(adapter);
-        Log.d("test_log", "5");
         return view;
     }
 
     private class ViewHolder {
-        TextView stock_title;
+        TextView stock_tag;
         TextView stock_page;
         TextView stock_quote;
         TextView stock_memo;
@@ -83,7 +73,7 @@ public class Fragment_detail_bookInLibrary extends Fragment {
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.card_stock_in_library, parent, false);
                 holder = new ViewHolder();
-                holder.stock_title = (TextView) convertView.findViewById(R.id.stock_title);
+                holder.stock_tag = (TextView) convertView.findViewById(R.id.stock_tag);
                 holder.stock_page = (TextView) convertView.findViewById(R.id.stock_page);
                 holder.stock_quote = (TextView) convertView.findViewById(R.id.stock_quote);
                 holder.stock_memo = (TextView) convertView.findViewById(R.id.stock_memo);
@@ -93,7 +83,7 @@ public class Fragment_detail_bookInLibrary extends Fragment {
             }
 
             final Item_stockInLibrary record = stocks.get(position);
-            holder.stock_title.setText(record.getStock_title());
+            holder.stock_tag.setText(record.getStock_tag());
             holder.stock_page.setText("p." + record.getStock_page());
             holder.stock_quote.setText(record.getStock_quote());
             holder.stock_memo.setText(record.getStock_memo());

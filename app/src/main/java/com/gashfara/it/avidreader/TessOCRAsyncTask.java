@@ -9,11 +9,11 @@ public class TessOCRAsyncTask
         extends AsyncTask<Object, Object, String> {
 
     Context context;
-    String mImagePath;
-    private MyTessOCR mTessOCR;
+
     Bitmap bitmap;
 
     public TessOCRAsyncTask(Context context, Bitmap bitmap) {
+        Log.d("test_log", "TessOCRAsyncTask");
 //        this.mImagePath = mImagePath;
         this.context = context;
         this.bitmap = bitmap;
@@ -21,16 +21,15 @@ public class TessOCRAsyncTask
 
     @Override
     protected String doInBackground(Object... arg0) {
-        Boolean ret = Boolean.FALSE;
         Log.d("test_log", "Start uploadFile");
-        String temp = null;
         try {
-            mTessOCR = new MyTessOCR(context);
-            temp = mTessOCR.getOCRResult(bitmap);
-            Log.d("log_test", temp);
-        } catch (Exception ex) {
-            Log.d("test_log", ex.getMessage());
+            Log.d("log_test", "x");
+//            mTessOCR = new MyTessOCR(context);
+        } catch (Exception e) {
+            Log.d("test_log_e", e.getMessage());
         }
+        String temp = null;
+
         Log.d("test_log", "Exit uploadFile");
         return temp;
     }

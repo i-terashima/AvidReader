@@ -1,6 +1,7 @@
 package com.gashfara.it.avidreader;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,13 +21,19 @@ public class Fragment_stock_fromCamera extends Fragment {
     private String mImagePath = null;
     private static Bitmap bmUpload;
     private ImageView mImageView;
+    private String result;
+    private Uri imgUri;
 
     public Fragment_stock_fromCamera() {
     }
 
-    public static Fragment_stock_fromCamera newInstance(Bitmap bitmap) {
-        bmUpload = bitmap;
+    public static Fragment_stock_fromCamera newInstance(String result, Uri imgUri) {
+        Bundle args = new Bundle();
+        args.putString("result", result);
+        args.putString("imgUri", imgUri.toString());
+
         Fragment_stock_fromCamera fragment = new Fragment_stock_fromCamera();
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -34,15 +42,22 @@ public class Fragment_stock_fromCamera extends Fragment {
         Log.d("test_log", "Fragment_stock_fromCamera");
         View view = inflater.inflate(R.layout.fragment_stock_fromcamera, container, false);
 
-        ((ImageView) view.findViewById(R.id.image_view1)).setImageBitmap(bmUpload);
+        result = getArguments().getString("result");
+        imgUri = Uri.parse(getArguments().getString("imgUri"));
+        Log.d("log_test",result);
+        Log.d("log_test",imgUri.toString());
+
+        ((ImageView) view.findViewById(R.id.image_view1)).setImageURI(imgUri);
+        ((TextView) view.findViewById(R.id.stock_quote)).setText(result);
         Button postBtn = (Button) view.findViewById(R.id.post_button);
         postBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mImagePath = getFilePath();
-                Log.d("test_log", "start upload");
+//                mImagePath = getFilePath();
 //                new TessOCRAsyncTask(getActivity().getApplicationContext(),mImagePath);
-                new TessOCRAsyncTask(getActivity().getApplicationContext(),bmUpload);
+//                new TessOCRAsyncTask(getActivity().getApplicationContext(),bmUpload).execute();
+
+
                 Fragment fragment = new Container_top();
                 getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
             }

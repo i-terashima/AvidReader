@@ -1,7 +1,6 @@
 package com.gashfara.it.avidreader;
 
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -25,17 +25,17 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.googlecode.tesseract.android.TessBaseAPI;
 import com.kii.cloud.storage.Kii;
 import com.kii.cloud.storage.KiiObject;
 import com.kii.cloud.storage.callback.KiiQueryCallBack;
 import com.kii.cloud.storage.query.KiiQuery;
 import com.kii.cloud.storage.query.KiiQueryResult;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,19 +43,24 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
 
     private ArrayList<Item_library> records = new ArrayList<Item_library>();
     private ArrayAdapter<Item_library> adapter;
-    private static final int IMAGE_CHOOSER_RESULTCODE = 1;
-    private Uri mImageUri;
-    private String filename;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private boolean hasNextPage = false;
     ArrayList<Item_library> currentRecords = null;
+
+    static final int PHOTO_REQUEST_CODE = 1;
+    private TessBaseAPI tessBaseApi;
+    Uri outputFileUri;
+    private static final String lang = "jpn";
+    String result = "empty";
+    private static final String DATA_PATH = Environment.getExternalStorageDirectory() + "/Tess-two/";
 
     private void startAsyncNextQuery(KiiQueryResult<KiiObject> res) {
         isNextResultReady = false;
         AsyncNextQuery asyncNextQuery = new AsyncNextQuery(getActivity().getApplicationContext());
         asyncNextQuery.execute(res);
     }
+
     private boolean isNextResultReady = false;
     //直近のfetch()で、result.hasNext()の結果次のページがある場合、次のページの結果を保存している。new
     private KiiQueryResult<KiiObject> nextResult = null;
@@ -104,8 +109,8 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
 
         getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-                                           int position, long arg3) {
+            public boolean onItemLongClick(AdapterView<?> arg0, View view,
+                                           int position, long id) {
                 final String[] items = {"カメラから画像を取得", "ギャラリーから画像を取得"};
                 new AlertDialog.Builder(getActivity())
                         .setTitle("文章をストック")
@@ -114,34 +119,12 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-//                                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                                        startActivityForResult(Intent.createChooser(intent, "Camera"), IMAGE_CHOOSER_RESULTCODE);
-                                        filename = System.currentTimeMillis() + ".jpg";
-                                        //設定を保存するパラメータを作成
-                                        ContentValues values = new ContentValues();
-                                        values.put(MediaStore.Images.Media.TITLE, filename);//ファイル名
-                                        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");//ファイルの種類
-                                        mImageUri = getActivity().getApplicationContext().getContentResolver().insert(
-                                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                                        Intent intent = new Intent();
-                                        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);//カメラ
-                                        intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);//画像の保存先
-                                        startActivityForResult(intent, IMAGE_CHOOSER_RESULTCODE);
+                                        startCameraActivity();
                                         break;
                                     case 1:
                                         break;
                                     case 2:
                                         break;
-                                }
-                                dialog.dismiss();           // item_which pressed
-                            }
-                        })
-                        .setTitle("書庫から削除")
-                        .setItems(items, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case 0:
                                 }
                                 dialog.dismiss();           // item_which pressed
                             }
@@ -185,7 +168,6 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
                         //得られたListをMessageRecordに設定する
                         KiiObject obj;
                         int objListsSize = objLists.size();
-                        Log.d("test_log", "size : " + objListsSize);
                         for (int i = 0; i < objListsSize; i++) {
                             obj = objLists.get(i);
                             Gson gson = new Gson();
@@ -209,8 +191,6 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
             }
         });
     }
-
-
 
     private class ListAdapter extends ArrayAdapter<Item_library> {
         private LayoutInflater mInflater;
@@ -244,75 +224,6 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //他のインテントの実行結果と区別するためstartActivityで指定した定数IMAGE_CHOOSER_RESULTCODEと一致するか確認
-        if (requestCode == IMAGE_CHOOSER_RESULTCODE) {
-            //失敗の時
-            if (resultCode != getActivity().RESULT_OK) {
-                return;
-            }
-            Uri result;
-            if (data != null) {
-                result = data.getData();
-            } else {
-                result = mImageUri;
-            }
-
-            InputStream inputStream = null;
-            try {
-                inputStream = getActivity().getContentResolver().openInputStream(mImageUri);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            BitmapFactory.Options imageOptions = new BitmapFactory.Options();
-            imageOptions.inJustDecodeBounds = true;
-            imageOptions.inPreferredConfig = Bitmap.Config.ALPHA_8;
-            BitmapFactory.decodeStream(inputStream, null, imageOptions);
-            Log.d("test_log", "Original Image Size: " + imageOptions.outWidth + " x " + imageOptions.outHeight);
-
-            try {
-                inputStream.close();
-                inputStream = null;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Bitmap bitmap;
-            int imageSizeMax = 500;
-            try {
-                inputStream = getActivity().getContentResolver().openInputStream(mImageUri);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            float imageScaleWidth = (float) imageOptions.outWidth / imageSizeMax;
-            float imageScaleHeight = (float) imageOptions.outHeight / imageSizeMax;
-
-            // もしも、縮小できるサイズならば、縮小して読み込む
-            if (imageScaleWidth > 2 && imageScaleHeight > 2) {
-                imageOptions.inJustDecodeBounds = false;
-                // 縦横、小さい方に縮小するスケールを合わせる
-                int imageScale = (int) Math.floor((imageScaleWidth > imageScaleHeight ? imageScaleHeight : imageScaleWidth));
-                // inSampleSizeには2のべき上が入るべきなので、imageScaleに最も近く、かつそれ以下の2のべき上の数を探す
-                for (int i = 2; i <= imageScale; i *= 2) {
-                    imageOptions.inSampleSize = i;
-                }
-                Log.d("test_log", "Sample Size: 1/" + imageOptions.inSampleSize);
-                bitmap = BitmapFactory.decodeStream(inputStream, null, imageOptions);
-            } else {
-                bitmap = BitmapFactory.decodeStream(inputStream);
-            }
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            getActivity().getApplicationContext().getContentResolver().delete(result, null, null);
-
-            Fragment_stock_fromCamera fragment = Fragment_stock_fromCamera.newInstance(bitmap);
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("library").commit();
-        }
-    }
-
     private void fetch() {
         //KiiCloudの検索条件を作成。検索条件は未設定。なので全件。
         KiiQuery query = new KiiQuery();
@@ -333,17 +244,15 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
                         //200件を超えている場合のページング処理のためhasNext()の結果を保存
                         hasNextPage = result.hasNext();
                         //
-                        if(hasNextPage == true){
+                        if (hasNextPage == true) {
                             startAsyncNextQuery(result);
                         }
                         //得られたListをMessageRecordに設定する
                         KiiObject obj;
                         int objListsSize = objLists.size();
 
-                        Log.d("test_log", "size" + objListsSize);
-
                         //得られたListをMessageRecordに設定する
-                        for (int i = 0 ; i < objListsSize; i++) {
+                        for (int i = 0; i < objListsSize; i++) {
                             obj = objLists.get(i);
                             Gson gson = new Gson();
                             Item_library record = gson.fromJson(obj.getString("book"), Item_library.class);
@@ -377,6 +286,7 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
         protected void onPreExecute() {
             super.onPreExecute();
         }
+
         @Override
         protected KiiQueryResult<KiiObject> doInBackground(KiiQueryResult<KiiObject>... kiiQueryResults) {
             try {
@@ -387,6 +297,7 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
             }
             return res;
         }
+
         @Override
         protected void onPostExecute(KiiQueryResult<KiiObject> res) {
             setNextResult(res);
@@ -398,5 +309,94 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
         TextView publisherListText;
         TextView authorListText;
         TextView statusListText;
+    }
+
+    private void startCameraActivity() {
+        try {
+            String IMGS_PATH = Environment.getExternalStorageDirectory().toString() + "/Tess-two/imgs";
+            prepareDirectory(IMGS_PATH);
+
+            String img_path = IMGS_PATH + "/ocr.jpg";
+
+            outputFileUri = Uri.fromFile(new File(img_path));
+
+            final Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+
+            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivityForResult(takePictureIntent, PHOTO_REQUEST_CODE);
+            }
+        } catch (Exception e) {
+            Log.e("test_log", e.getMessage());
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+                                 Intent data) {
+        //making photo
+        if (requestCode == PHOTO_REQUEST_CODE && resultCode == getActivity().RESULT_OK) {
+            startOCR(outputFileUri);
+        } else {
+            Toast.makeText(getActivity(), "ERROR: Image was not obtained.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void prepareDirectory(String path) {
+        File dir = new File(path);
+        if (!dir.exists()) {
+            if (!dir.mkdirs()) {
+                Log.e("test_log", "ERROR: Creation of directory " + path + " failed, check does Android Manifest have permission to write to external storage.");
+            }
+        } else {
+            Log.i("test_log", "Created directory " + path);
+        }
+    }
+
+    private void startOCR(Uri imgUri) {
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 4; // 1 - means max size. 4 - means maxsize/4 size. Don't use value <4, because you need more memory in the heap to store your data.
+            Bitmap bitmap = BitmapFactory.decodeFile(imgUri.getPath(), options);
+
+            result = extractText(bitmap);
+            Log.d("log_test", result);
+
+        } catch (Exception e) {
+            Log.e("test_log", e.getMessage());
+        }
+        Fragment fragment = Fragment_stock_fromCamera.newInstance(result, imgUri);
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+    }
+
+    private String extractText(Bitmap bitmap) {
+        try {
+            tessBaseApi = new TessBaseAPI();
+        } catch (Exception e) {
+            Log.e("test_log", e.getMessage());
+            if (tessBaseApi == null) {
+                Log.e("test_log", "TessBaseAPI is null. TessFactory not returning tess object.");
+            }
+        }
+        Log.d("test_log", "x");
+        tessBaseApi.init(DATA_PATH, lang);
+        Log.d("test_log", "xx");
+//       //EXTRA SETTINGS
+//        //For example if we only want to detect numbers
+//        tessBaseApi.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "1234567890");
+//
+//        //blackList Example
+//        tessBaseApi.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "!@#$%^&*()_+=-qwertyuiop[]}{POIU" +
+//                "YTRWQasdASDfghFGHjklJKLl;L:'\"\\|~`xcvXCVbnmBNM,./<>?");
+
+        tessBaseApi.setImage(bitmap);
+        String extractedText = "empty result";
+        try {
+            extractedText = tessBaseApi.getUTF8Text();
+        } catch (Exception e) {
+            Log.e("test_log", "Error in recognizing text.");
+        }
+        tessBaseApi.end();
+        return extractedText;
     }
 }

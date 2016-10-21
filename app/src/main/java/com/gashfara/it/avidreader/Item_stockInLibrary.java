@@ -6,24 +6,24 @@ package com.gashfara.it.avidreader;
 
 public class Item_stockInLibrary {
 
-    String stock_title;
+    String stock_tag;
     int stock_page;
     String stock_quote;
     String stock_memo;
 
     public Item_stockInLibrary() {
-        this.stock_title = "";
+        this.stock_tag = "";
         this.stock_page = 0;
         this.stock_quote = "";
         this.stock_memo = "";
     }
 
-    public String getStock_title() {
-        return stock_title;
+    public String getStock_tag() {
+        return stock_tag;
     }
 
-    public void setStock_title(String stock_title) {
-        this.stock_title = stock_title;
+    public void setStock_tag(String stock_tag) {
+        this.stock_tag = stock_tag;
     }
 
     public int getStock_page() {
