@@ -4,8 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.googlecode.tesseract.android.TessBaseAPI;
 import com.kii.cloud.storage.Kii;
 import com.kii.cloud.storage.KiiObject;
 import com.kii.cloud.storage.callback.KiiQueryCallBack;
@@ -49,11 +46,10 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
     ArrayList<Item_library> currentRecords = null;
 
     static final int PHOTO_REQUEST_CODE = 1;
-    private TessBaseAPI tessBaseApi;
     Uri outputFileUri;
-    private static final String lang = "jpn";
-    String result = "empty";
+    private int register_position;
     private static final String DATA_PATH = Environment.getExternalStorageDirectory() + "/Tess-two/";
+    private  List<KiiObject> objLists;
 
     private void startAsyncNextQuery(KiiQueryResult<KiiObject> res) {
         isNextResultReady = false;
@@ -101,7 +97,8 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
             @Override
             public void onItemClick(AdapterView<?> parentFragment, View arg1,
                                     int position, long arg3) {
-                Fragment fragment = Fragment_detail_bookInLibrary.newInstance(records.get(position));
+                String id = objLists.get(position).getString("_id");
+                Fragment fragment = Fragment_detail_bookInLibrary.newInstance(records.get(position), id);
                 getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
 
             }
@@ -110,7 +107,7 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
         getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View view,
-                                           int position, long id) {
+                                           final int position, long id) {
                 final String[] items = {"カメラから画像を取得", "ギャラリーから画像を取得"};
                 new AlertDialog.Builder(getActivity())
                         .setTitle("文章をストック")
@@ -119,6 +116,7 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
+                                        register_position = position;
                                         startCameraActivity();
                                         break;
                                     case 1:
@@ -240,7 +238,7 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
                             return;
                         }
                         //検索結果をListで得る
-                        List<KiiObject> objLists = result.getResult();
+                        objLists = result.getResult();
                         //200件を超えている場合のページング処理のためhasNext()の結果を保存
                         hasNextPage = result.hasNext();
                         //
@@ -336,7 +334,13 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
                                  Intent data) {
         //making photo
         if (requestCode == PHOTO_REQUEST_CODE && resultCode == getActivity().RESULT_OK) {
-            startOCR(outputFileUri);
+
+            Item_library record = currentRecords.get(register_position);
+            String id = objLists.get(register_position).getString("_id");
+
+            Fragment fragment = Fragment_stock_fromCamera.newInstance(outputFileUri,record, id);
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+
         } else {
             Toast.makeText(getActivity(), "ERROR: Image was not obtained.", Toast.LENGTH_SHORT).show();
         }
@@ -351,52 +355,5 @@ public class Fragment_library extends ListFragment implements ActivityCompat.OnR
         } else {
             Log.i("test_log", "Created directory " + path);
         }
-    }
-
-    private void startOCR(Uri imgUri) {
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 4; // 1 - means max size. 4 - means maxsize/4 size. Don't use value <4, because you need more memory in the heap to store your data.
-            Bitmap bitmap = BitmapFactory.decodeFile(imgUri.getPath(), options);
-
-            result = extractText(bitmap);
-            Log.d("log_test", result);
-
-        } catch (Exception e) {
-            Log.e("test_log", e.getMessage());
-        }
-        Fragment fragment = Fragment_stock_fromCamera.newInstance(result, imgUri);
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-    }
-
-    private String extractText(Bitmap bitmap) {
-        try {
-            tessBaseApi = new TessBaseAPI();
-        } catch (Exception e) {
-            Log.e("test_log", e.getMessage());
-            if (tessBaseApi == null) {
-                Log.e("test_log", "TessBaseAPI is null. TessFactory not returning tess object.");
-            }
-        }
-        Log.d("test_log", "x");
-        tessBaseApi.init(DATA_PATH, lang);
-        Log.d("test_log", "xx");
-//       //EXTRA SETTINGS
-//        //For example if we only want to detect numbers
-//        tessBaseApi.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "1234567890");
-//
-//        //blackList Example
-//        tessBaseApi.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "!@#$%^&*()_+=-qwertyuiop[]}{POIU" +
-//                "YTRWQasdASDfghFGHjklJKLl;L:'\"\\|~`xcvXCVbnmBNM,./<>?");
-
-        tessBaseApi.setImage(bitmap);
-        String extractedText = "empty result";
-        try {
-            extractedText = tessBaseApi.getUTF8Text();
-        } catch (Exception e) {
-            Log.e("test_log", "Error in recognizing text.");
-        }
-        tessBaseApi.end();
-        return extractedText;
     }
 }

@@ -23,7 +23,7 @@ public class Fragment_detail_bookInLibrary extends Fragment {
     public Fragment_detail_bookInLibrary() {
     }
 
-    public static Fragment_detail_bookInLibrary newInstance(Item_library book) {
+    public static Fragment_detail_bookInLibrary newInstance(Item_library book, String id) {
         Log.d("test_log", "Fragment_detail_bookInLibrary");
         Bundle args = new Bundle();
         args.putSerializable("book", book);

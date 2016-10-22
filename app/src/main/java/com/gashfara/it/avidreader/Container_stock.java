@@ -28,7 +28,8 @@ public class Container_stock extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Fragment fragment = Fragment_stock.newInstance();
         View view = inflater.inflate(R.layout.container_stock, container, false);
-        getChildFragmentManager().beginTransaction().add(R.id.fragment_stock, fragment).commit();
+        getFragmentManager().beginTransaction().add(R.id.fragment_stock, fragment).commit();
+
         FloatingActionButton fab_search = (FloatingActionButton) view.findViewById(R.id.fab_add_stock);
 
         fab_search.setOnClickListener(new View.OnClickListener() {

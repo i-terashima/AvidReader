@@ -2,24 +2,16 @@ package com.gashfara.it.avidreader;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.NetworkImageView;
 
 import org.json.JSONArray;
@@ -61,37 +53,6 @@ public class Fragment_webSearch extends ListFragment {
 
         adapter = new ListAdapter(getActivity(), messageRecords);
         setListAdapter(adapter);
-
-        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parentFragment, View arg1,
-                                    int position, long arg3) {
-                final String[] items = {"読了済", "読書中", "購入予定"};
-                int defaultItem = 0;
-                final List<Integer> checkedItems = new ArrayList<>();
-                checkedItems.add(defaultItem);
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("書庫に登録")
-                        .setSingleChoiceItems(items, defaultItem, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                checkedItems.clear();
-                                checkedItems.add(which);
-                            }
-                        })
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (!checkedItems.isEmpty()) {
-                                    Log.d("checkedItem:", "" + checkedItems.get(0));
-                                }
-                            }
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .show();
-            }
-        });
-
     }
 
     private class ViewHolder {
@@ -100,40 +61,6 @@ public class Fragment_webSearch extends ListFragment {
         TextView publisherListText;
         TextView authorListText;
     }
-
-    private void fetch() {
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.GET,
-                "https://www.googleapis.com/books/v1/volumes?q=" + getArguments().getString("searchText", searchText) + "&maxResults=40",
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject jsonObject) {
-                        try {
-                            messageRecords.clear();
-                            messageRecords = parse(jsonObject);
-
-                            adapter = new ListAdapter(getActivity(), messageRecords);
-                            setListAdapter(adapter);
-
-                            adapter.notifyDataSetChanged();
-
-                        } catch (JSONException e) {
-                            Toast.makeText(getActivity(), "Unable to parse data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                },
-                //通信結果、エラーの時の処理クラスを作成。
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(getActivity(), "Unable to fetch data: " + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-        MyApplication.getInstance().getRequestQueue().add(request);
-    }
-
-    
 
     private List<Item_library> parse(JSONObject json) throws JSONException {
         ArrayList<Item_library> records = new ArrayList<Item_library>();

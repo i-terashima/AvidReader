@@ -46,23 +46,37 @@ public class Item_library implements Serializable {
     public String getImageUrl() {
         return imageUrl;
     }
+
     public String getTitle() {
         return title;
     }
+
     public String getAuthor() {
         return author;
     }
+
     public String getPublisher() {
         return publisher;
     }
+
     public String getPurchaseUrl() {
         return purchaseUrl;
     }
+
     public String getStatus() {
         return status;
     }
+
     public List<Item_stockInLibrary> getStocks() {
         return stocks;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 
     public void setStocks(List<Item_stockInLibrary> stocks) {

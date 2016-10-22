@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.crittercism.app.Crittercism;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -45,6 +46,9 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         } else {
 
         }
+        //ad(クラッシュ)で追加ここから
+        //Crittercismの初期化。IDの部分は自分のアプリのIDにしてください。
+        Crittercism.initialize(getApplicationContext(), "e21bb2c57fd9450ca0217b6fd150aed600555300");
 
         KiiUser user = KiiUser.getCurrentUser();
 
